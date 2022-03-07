@@ -2,8 +2,8 @@
 Represents a player that can take input from a human
 """
 
-from players.player import Player
 from board import Board
+from players.player import Player
 
 def _parse_input(input_string: str, max_length: int) -> int:
     output = 0
@@ -22,6 +22,9 @@ class InputPlayer(Player):
     A player that can take input from the console
     """
     def place(self, board: Board):
+        """
+        Places a piece on the board
+        """
         while True:
             if board.depth > 1:
                 depth = _parse_input("depth", board.depth)

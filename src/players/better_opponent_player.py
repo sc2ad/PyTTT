@@ -1,11 +1,10 @@
 """
 Represents the BetterOpponentPlayer type
 """
-import random
-from players.player import Player
 from board import Board
+from players.random_player import RandomPlayer
 
-class BetterOpponentPlayer(Player):
+class BetterOpponentPlayer(RandomPlayer):
     """
     A player that performs random piece placement unless it can win or lose, in which case, will attempt to block.
     """
@@ -15,6 +14,9 @@ class BetterOpponentPlayer(Player):
         self._win_condition = win_condition
         self._player_markers = player_markers
     def place(self, board: Board):
+        """
+        Places a piece on the board
+        """
         for x in range(board.depth):
             for y in range(board.width):
                 for z in range(board.height):
@@ -36,10 +38,4 @@ class BetterOpponentPlayer(Player):
                                 return
                         board[x][y][z] = prev
         # If we cannot win or avoid losing anywhere, play somewhere random
-        while True:
-            depth = random.randint(0, board.depth - 1)
-            col = random.randint(0, board.width - 1)
-            row = random.randint(0, board.height - 1)
-
-            if board.attempt_move(self._marker, depth, col, row):
-                return
+        super().place(board)

@@ -3,8 +3,8 @@ Represents a player that chooses its moves randomly
 """
 
 import random
-from players.player import Player
 from board import Board
+from players.player import Player
 
 class RandomPlayer(Player):
     """
