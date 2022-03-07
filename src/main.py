@@ -2,8 +2,8 @@
 Main file for TicTacToe Python
 """
 import time
-import utils
 from board import Board
+import utils
 from players.player import Player
 from players.random_player import RandomPlayer
 from players.input_player import InputPlayer
