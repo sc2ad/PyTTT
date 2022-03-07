@@ -58,10 +58,10 @@ def play_game(game_board: Board, players: "list[Player]"):
                 print(f"Game has ended in a draw after {game_board.move_count} total moves!")
                 return None
 
-def try_replay(board: Board, winner: Player):
+def watch_replay(board: Board, winner: Player):
     board.reset()
     board.print_board()
-    for x, y, z, player in reversed(board.last_moves):
+    for x, y, z, player in board.last_moves:
         board[x][y][z] = player
         time.sleep(1)
         print(f"Player with marker: {player}'s turn!")
@@ -94,7 +94,7 @@ def create_game():
         win_condition = exactly_n(win_amount)
     elif win_condition == "at least":
         win_amount = min(width, height)
-        win_amount = input_helpers.number("Select the quantity to win by", win_amount, max(width, height, depth), win_amount)
+        win_amount = input_helpers.number("Select the quantity to win by", min(width, height, depth), max(width, height, depth), win_amount)
         win_condition = at_least_n(win_amount)
     
     # Select placement policy
@@ -148,7 +148,7 @@ def main():
         while True:
             response = input_helpers.selector("Would you like to watch the replay, play again, or exit", ["watch replay", "play again", "exit"], "exit")
             if response == "watch replay":
-                try_replay(game_board, winner)
+                watch_replay(game_board, winner)
             elif response == "exit":
                 print("Thank you for playing! :-)")
                 return
