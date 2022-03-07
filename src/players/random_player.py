@@ -1,12 +1,19 @@
+"""
+Represents a player that chooses its moves randomly
+"""
+
 import random
-from players.Player import Player
-from Board import Board
+from players.player import Player
+from board import Board
 
 class RandomPlayer(Player):
-    def __init__(self, marker):
-        super().__init__(marker)
-    
+    """
+    A player that plays randomly
+    """
     def place(self, board: Board):
+        """
+        Places a piece on the board
+        """
         while True:
             depth = random.randint(0, board.depth - 1)
             col = random.randint(0, board.width - 1)

@@ -1,0 +1,8 @@
+[BASIC]
+good-names=i,_,x,y,z,n,dx,dy,lx,ly,lz,st
+
+[FORMAT]
+max-line-length=240
+
+[REFACTORING]
+DISABLE=too-many-nested-blocks,too-many-arguments,too-few-public-methods,too-many-instance-attributes

@@ -1,10 +1,15 @@
-
+"""
+Represents a TicTacToe Board
+"""
 def _pretty_print_item(item):
-    if item != None:
+    if item is not None:
         return item
     return "-"
 
 class Board:
+    """
+    A TicTacToe Board
+    """
     def __init__(self, win_condition, valid_move, max_moves: int, width: int, height: int, depth: int = 1):
         self.width = width
         self.height = height
@@ -17,23 +22,29 @@ class Board:
         self._max_moves = max_moves
         self.reset()
 
-    def initialize_board(self, initializer_functor):
-        for x in range(self.depth):
-            for y in range(self.width):
-                for z in range(self.height):
-                    self.board[x][y][z] = initializer_functor(x, y, z)
-
     def reset(self):
+        """
+        Resets the board, but leaves all other stats unchanged
+        """
         self.board = [[[None for _ in range(self.height)] for _ in range(self.width)] for _ in range(self.depth)]
-    
+
     @property
     def move_count(self):
+        """
+        Gets the move count
+        """
         return self._move_count
     @property
     def last_moves(self):
+        """
+        Gets the last moves list
+        """
         return self._last_moves
     @property
     def max_moves(self):
+        """
+        Gets the maximum moves
+        """
         return self._max_moves
 
     def _check_win(self, player, x, y, z):
@@ -58,11 +69,17 @@ class Board:
         This value must be checked, since a given player could win on one piece placement, but no longer be winning on the next.
         """
         return self._winning_player == player
-    
+
     def has_ended(self) -> bool:
+        """
+        Returns if the game has ended
+        """
         return self._move_count >= self._max_moves
 
     def attempt_move(self, player, x, y, z) -> bool:
+        """
+        Attempts to place a piece at the provided location, returns True if allowed, False otherwise
+        """
         # Check that the move is valid (satisfies the overwrite condition)
         # Increment move count if success
         if self._valid_move_functor(self, player, x, y, z):
@@ -78,6 +95,9 @@ class Board:
         return self.board[depth]
 
     def print_board(self):
+        """
+        Prints the board
+        """
         for board in range(self.depth):
             if board > 0:
                 print(f"Depth: {board}")

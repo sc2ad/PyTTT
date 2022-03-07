@@ -1,8 +1,14 @@
-from players.Player import Player
-from Board import Board
+"""
+Represents the BetterOpponentPlayer type
+"""
 import random
+from players.player import Player
+from board import Board
 
 class BetterOpponentPlayer(Player):
+    """
+    A player that performs random piece placement unless it can win or lose, in which case, will attempt to block.
+    """
     def __init__(self, marker, player_markers, placement_policy, win_condition):
         super().__init__(marker)
         self._placement_policy = placement_policy
@@ -21,15 +27,14 @@ class BetterOpponentPlayer(Player):
                             board[x][y][z] = prev
                             board.attempt_move(self._marker, x, y, z)
                             return
-                        else:
-                            # Check if other opponents can win anywhere
-                            for player_marker in self._player_markers:
-                                board[x][y][z] = player_marker
-                                if self._win_condition(board, player_marker, x, y, z):
-                                    board[x][y][z] = prev
-                                    board.attempt_move(self._marker, x, y, z)
-                                    return
-                            board[x][y][z] = prev
+                        # Check if other opponents can win anywhere
+                        for player_marker in self._player_markers:
+                            board[x][y][z] = player_marker
+                            if self._win_condition(board, player_marker, x, y, z):
+                                board[x][y][z] = prev
+                                board.attempt_move(self._marker, x, y, z)
+                                return
+                        board[x][y][z] = prev
         # If we cannot win or avoid losing anywhere, play somewhere random
         while True:
             depth = random.randint(0, board.depth - 1)
