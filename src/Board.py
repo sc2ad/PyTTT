@@ -5,25 +5,36 @@ def _pretty_print_item(item):
     return "-"
 
 class Board:
-    def __init__(self, win_condition, valid_move, width: int, height: int, depth: int = 1):
+    def __init__(self, win_condition, valid_move, max_moves: int, width: int, height: int, depth: int = 1):
         self.width = width
         self.height = height
         self.depth = depth
         self._move_count = 0
-        self.board = [[[None for _ in range(height)] for _ in range(width)] for _ in range(depth)]
         self._winning_player = None
         self._check_winning_functor = win_condition
         self._valid_move_functor = valid_move
+        self._last_moves = []
+        self._max_moves = max_moves
+        self.reset()
 
     def initialize_board(self, initializer_functor):
         for x in range(self.depth):
             for y in range(self.width):
                 for z in range(self.height):
                     self.board[x][y][z] = initializer_functor(x, y, z)
+
+    def reset(self):
+        self.board = [[[None for _ in range(self.height)] for _ in range(self.width)] for _ in range(self.depth)]
     
     @property
     def move_count(self):
         return self._move_count
+    @property
+    def last_moves(self):
+        return self._last_moves
+    @property
+    def max_moves(self):
+        return self._max_moves
 
     def _check_win(self, player, x, y, z):
         """
@@ -47,6 +58,9 @@ class Board:
         This value must be checked, since a given player could win on one piece placement, but no longer be winning on the next.
         """
         return self._winning_player == player
+    
+    def has_ended(self) -> bool:
+        return self._move_count >= self._max_moves
 
     def attempt_move(self, player, x, y, z) -> bool:
         # Check that the move is valid (satisfies the overwrite condition)
@@ -56,6 +70,7 @@ class Board:
             # If we have a success, check to see who won
             self._check_win(player, x, y, z) 
             self._move_count += 1
+            self._last_moves.append((x, y, z, player))
             return True
         return False
 
