@@ -44,7 +44,7 @@ class DiagonalPlane(Enum):
 def diagonal_check_plane_pair(lhs, max_lhs, rhs_valid, board_accessor, player):
     count = 0
     # Subtract from lhs and rhs until we hit 0 on both
-    for delta in range(0, -lhs, -1):
+    for delta in range(0, -lhs - 1, -1):
         if not rhs_valid(delta) or board_accessor(delta) != player:
             break
         count += 1
@@ -54,11 +54,32 @@ def diagonal_check_plane_pair(lhs, max_lhs, rhs_valid, board_accessor, player):
         count += 1
     return count
 
+def diagonal_check_xy_plane_pair(board: Board, player, x, y, z, alternate_diagonals: bool):
+    def rhs_valid(delta):
+        if alternate_diagonals:
+            if delta < 0:
+                return y - delta < board.width
+            return y + delta >= 0
+        if delta < 0:
+            return y + delta >= 0
+        return y + delta < board.width
+    def board_accessor(delta):
+        if alternate_diagonals:
+            if delta < 0:
+                return board[x + delta][y - delta][z]
+            return board[x - delta][y + delta][z]
+        return board[x + delta][y][z]
+    return diagonal_check_plane_pair(x, board.depth, rhs_valid, board_accessor, player)
+
 def diagonal_check_xz_plane_pair(board: Board, player, x, y, z, alternate_diagonals):
     def rhs_valid(delta):
-        if alternate_diagonals or delta > 0:
-            return z + delta < board.height
-        return z + delta >= 0
+        if alternate_diagonals:
+            if delta < 0:
+                return z - delta < board.height
+            return z + delta >= 0
+        if delta < 0:
+            return z + delta >= 0
+        return z + delta < board.height
     def board_accessor(delta):
         if alternate_diagonals:
             if delta < 0:
@@ -66,61 +87,23 @@ def diagonal_check_xz_plane_pair(board: Board, player, x, y, z, alternate_diagon
             return board[x - delta][y][z + delta]
         return board[x + delta][y][z + delta]
     return diagonal_check_plane_pair(x, board.depth, rhs_valid, board_accessor, player)
-    # count = 0
-    # alter = -1 if alternate_diagonals else 1
-    # # Count top left/bottom left
-    # for delta in range(0, -x, -1):
-    #     if z + delta < 0:
-    #         break
-    #     if board[x + delta][y][z + delta * alter] != player:
-    #         break
-    #     count += 1
-    # # Then count bottom right/top right
-    # for delta in range(1, board.depth - x):
-    #     if z + delta >= board.height:
-    #         break
-    #     if board[x + delta * alter][y][z + delta] != player:
-    #         break
-    #     count += 1
-    # return count
-
-def diagonal_check_xy_plane_pair(board: Board, player, x, y, z, alternate_diagonals: bool):
-    count = 0
-    alter = -1 if alternate_diagonals else 1
-    # Count top left
-    for delta in range(0, -x, -1):
-        if y + delta < 0:
-            break
-        if board[x + delta][y + delta * alter][z] != player:
-            break
-        count += 1
-    # Then count bottom right/top right
-    for delta in range(1, board.depth - x):
-        if y + delta >= board.width:
-            break
-        if board[x + delta * alter][y + delta][z] != player:
-            break
-        count += 1
-    return count
 
 def diagonal_check_yz_plane_pair(board: Board, player, x, y, z, alternate_diagonals: bool):
-    count = 0
-    alter = -1 if alternate_diagonals else 1
-    # Count top left/bottom left
-    for delta in range(0, -y, -1):
-        if z + delta < 0:
-            break
-        if board[x][y + delta][z + delta * alter] != player:
-            break
-        count += 1
-    # Then count bottom right/top right
-    for delta in range(1, board.depth - x):
-        if z + delta >= board.height:
-            break
-        if board[x][y + delta * alter][z + delta] != player:
-            break
-        count += 1
-    return count
+    def rhs_valid(delta):
+        if alternate_diagonals:
+            if delta < 0:
+                return z - delta < board.height
+            return z + delta < board.height
+        if delta < 0:
+            return z + delta >= 0
+        return z + delta < board.height
+    def board_accessor(delta):
+        if alternate_diagonals:
+            if delta < 0:
+                return board[x][y + delta][z - delta]
+            return board[x][y - delta][z + delta]
+        return board[x][y + delta][z + delta]
+    return diagonal_check_plane_pair(y, board.width, rhs_valid, board_accessor, player)
 
 def diagonal_check_plane(board: Board, player, x, y, z, plane: DiagonalPlane):
     # Each of these planes consist of two diagonals, so lets apply each of those in turn

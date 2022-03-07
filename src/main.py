@@ -9,6 +9,14 @@ def exactly_n(n: int):
             diagonal_check(board, player, x, y, z) == n
     return win
 
+def at_least_n(n: int):
+    def win(board: Board, player, x, y, z):
+        return column_check(board, player, x, y, z) >= n or \
+            row_check(board, player, x, y, z) >= n or \
+            depth_check(board, player, x, y, z) >= n or \
+            diagonal_check(board, player, x, y, z) >= n
+    return win
+
 def place_on_none(board: Board, player, x, y, z):
     return board[x][y][z] == None
 
